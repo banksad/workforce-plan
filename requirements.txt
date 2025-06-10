@@ -1,2 +1,1 @@
 Flask
-pysqlite3-binary

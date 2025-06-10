@@ -20,6 +20,12 @@ application:
 pip install -r requirements.txt
 ```
 
+The project uses Python's built-in `sqlite3` module, so the previous
+`pysqlite3-binary` dependency has been removed. If you have an older
+environment where SQLite is not compiled into Python, you can add a
+`pysqlite3` package that matches your Python version, but it is usually
+unnecessary.
+
 2. Run the application:
 
 ```bash
