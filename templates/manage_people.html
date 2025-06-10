@@ -13,6 +13,13 @@
     <label>Expected End Date (YYYY-MM-DD): <input type="text" name="expected_end_date"></label><br>
     <input type="submit" value="Add Person">
   </form>
+
+  <h3>Bulk Upload</h3>
+  <form action="{{ url_for('upload_people') }}" method="post" enctype="multipart/form-data">
+    <input type="file" name="csv_file" accept=".csv" required>
+    <input type="submit" value="Upload CSV">
+  </form>
+  <p><a href="{{ url_for('download_people_template') }}">Download template CSV</a></p>
   
   <h3>Current People</h3>
   <table border="1">
