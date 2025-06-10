@@ -8,7 +8,7 @@ reporting tools for human resources teams.
 
 The repository currently contains the following modules:
 
-- `app.py` — Flask server providing pages to manage people, posts and budget data.
+- `app.py` — Flask server providing pages to manage people, posts, budget data and pay rates.
 - `database.py` — utilities for connecting to a SQLite database.
 - `init_db.py` — script to create the required tables.
 - `utils.py` — helper functions used for forecasting and budgeting.
@@ -42,7 +42,8 @@ python app.py
 ```
 
 4. Open `http://localhost:5000/` in your browser and use the navigation links to
-manage records or run a forecast. You can also export the people table to CSV
+manage records or run a forecast. The interface now includes a tab to manage
+monthly pay rates where you can upload or edit rates in bulk. You can also export the people table to CSV
 and generate a monthly cost chart from the interface.
 
 Future development will add more functionality, including data ingestion,

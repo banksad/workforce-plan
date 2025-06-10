@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Edit Pay Rate</h2>
+  <form method="post">
+    <label>Location: <input type="text" name="location" value="{{ record['location'] }}" required></label><br>
+    <label>Grade: <input type="text" name="grade" value="{{ record['grade'] }}" required></label><br>
+    <label>Date (YYYY-MM): <input type="text" name="date" value="{{ record['year_month'] }}" required></label><br>
+    <label>Pay: <input type="text" name="pay" value="{{ record['monthly_planning_rate'] }}" required></label><br>
+    <input type="submit" value="Update Pay Rate">
+  </form>
+{% endblock %}
