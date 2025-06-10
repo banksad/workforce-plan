@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Forecast for {{ forecast.year }}-{{ forecast.month }}</h2>
+  <p><strong>Total Forecast Cost:</strong> {{ forecast.total_cost }}</p>
+  <p><strong>Allocated Budget:</strong> {{ budget }}</p>
+  <h3>Cost Details</h3>
+  <table border="1">
+    <tr>
+      <th>Person ID</th>
+      <th>Name</th>
+      <th>Cost</th>
+    </tr>
+    {% for item in forecast.details %}
+    <tr>
+      <td>{{ item.person_id }}</td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.cost }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Manage Budget</h2>
+  <form method="post">
+    <label>Team: <input type="text" name="team"></label><br>
+    <label>Work Stream: <input type="text" name="work_stream"></label><br>
+    <label>Year-Month (YYYY-MM): <input type="text" name="year_month" required></label><br>
+    <label>Allocated Budget: <input type="text" name="allocated_budget" required></label><br>
+    <input type="submit" value="Add Budget">
+  </form>
+  
+  <h3>Current Budget Records</h3>
+  <table border="1">
+    <tr>
+      <th>Budget ID</th>
+      <th>Team</th>
+      <th>Work Stream</th>
+      <th>Year-Month</th>
+      <th>Allocated Budget</th>
+    </tr>
+    {% for record in budgets %}
+    <tr>
+      <td>{{ record["budget_id"] }}</td>
+      <td>{{ record["team"] }}</td>
+      <td>{{ record["work_stream"] }}</td>
+      <td>{{ record["year_month"] }}</td>
+      <td>{{ record["allocated_budget"] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

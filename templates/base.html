@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Workforce Cost Model</title>
+  </head>
+  <body>
+    <header>
+      <h1>Workforce Cost Model</h1>
+      <nav>
+        <a href="{{ url_for('index') }}">Home</a> |
+        <a href="{{ url_for('manage_people') }}">Manage People</a> |
+        <a href="{{ url_for('manage_posts') }}">Manage Posts</a> |
+        <a href="{{ url_for('manage_budget') }}">Manage Budget</a> |
+        <a href="{{ url_for('run_forecast_route') }}">Run Forecast</a> |
+        <a href="{{ url_for('export_csv') }}">Export CSV</a> |
+        <a href="{{ url_for('generate_chart') }}">View Chart</a>
+      </nav>
+    </header>
+    <hr>
+    {% block content %}{% endblock %}
+  </body>
+</html>

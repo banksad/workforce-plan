@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Manage Posts</h2>
+  <form method="post">
+    <label>Workforce Plan Number: <input type="text" name="workforce_plan_number"></label><br>
+    <label>Funding Source: <input type="text" name="funding_source"></label><br>
+    <label>Post Start Date (YYYY-MM-DD): <input type="text" name="post_start_date"></label><br>
+    <label>Post End Date (YYYY-MM-DD): <input type="text" name="post_end_date"></label><br>
+    <label>Person ID (optional): <input type="text" name="person_id"></label><br>
+    <input type="submit" value="Add Post">
+  </form>
+  
+  <h3>Current Posts</h3>
+  <table border="1">
+    <tr>
+      <th>Post ID</th>
+      <th>Workforce Plan Number</th>
+      <th>Funding Source</th>
+      <th>Post Start Date</th>
+      <th>Post End Date</th>
+      <th>Person ID</th>
+    </tr>
+    {% for post in posts %}
+    <tr>
+      <td>{{ post["post_id"] }}</td>
+      <td>{{ post["workforce_plan_number"] }}</td>
+      <td>{{ post["funding_source"] }}</td>
+      <td>{{ post["post_start_date"] }}</td>
+      <td>{{ post["post_end_date"] }}</td>
+      <td>{{ post["person_id"] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Manage People</h2>
+  <form method="post">
+    <label>Name: <input type="text" name="name" required></label><br>
+    <label>Team: <input type="text" name="team"></label><br>
+    <label>Grade: <input type="text" name="grade" required></label><br>
+    <label>Work Stream: <input type="text" name="work_stream"></label><br>
+    <label>Location: <input type="text" name="location" required></label><br>
+    <label>Contract Type: <input type="text" name="contract_type"></label><br>
+    <label>Status: <input type="text" name="status"></label><br>
+    <label>Start Date (YYYY-MM-DD): <input type="text" name="start_date"></label><br>
+    <label>Expected End Date (YYYY-MM-DD): <input type="text" name="expected_end_date"></label><br>
+    <input type="submit" value="Add Person">
+  </form>
+  
+  <h3>Current People</h3>
+  <table border="1">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Team</th>
+      <th>Grade</th>
+      <th>Work Stream</th>
+      <th>Location</th>
+      <th>Contract Type</th>
+      <th>Status</th>
+      <th>Start Date</th>
+      <th>Expected End Date</th>
+    </tr>
+    {% for person in people %}
+    <tr>
+      <td>{{ person["person_id"] }}</td>
+      <td>{{ person["name"] }}</td>
+      <td>{{ person["team"] }}</td>
+      <td>{{ person["grade"] }}</td>
+      <td>{{ person["work_stream"] }}</td>
+      <td>{{ person["location"] }}</td>
+      <td>{{ person["contract_type"] }}</td>
+      <td>{{ person["status"] }}</td>
+      <td>{{ person["start_date"] }}</td>
+      <td>{{ person["expected_end_date"] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
