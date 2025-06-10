@@ -40,6 +40,61 @@ def manage_people():
         conn.close()
         return render_template("manage_people.html", people=people)
 
+
+@app.route("/edit_person/<int:person_id>", methods=["GET", "POST"])
+def edit_person(person_id):
+    conn = get_db_connection()
+    c = conn.cursor()
+    if request.method == "POST":
+        name = request.form["name"]
+        team = request.form["team"]
+        grade = request.form["grade"]
+        work_stream = request.form["work_stream"]
+        location = request.form["location"]
+        contract_type = request.form["contract_type"]
+        status = request.form["status"]
+        start_date = request.form["start_date"]
+        expected_end_date = request.form["expected_end_date"]
+
+        c.execute(
+            """
+            UPDATE people
+            SET name=?, team=?, grade=?, work_stream=?, location=?,
+                contract_type=?, status=?, start_date=?, expected_end_date=?
+            WHERE person_id=?
+            """,
+            (
+                name,
+                team,
+                grade,
+                work_stream,
+                location,
+                contract_type,
+                status,
+                start_date,
+                expected_end_date,
+                person_id,
+            ),
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for("manage_people"))
+    else:
+        c.execute("SELECT * FROM people WHERE person_id=?", (person_id,))
+        person = c.fetchone()
+        conn.close()
+        return render_template("edit_person.html", person=person)
+
+
+@app.route("/delete_person/<int:person_id>", methods=["POST"])
+def delete_person(person_id):
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("DELETE FROM people WHERE person_id=?", (person_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for("manage_people"))
+
 @app.route("/manage_posts", methods=["GET", "POST"])
 def manage_posts():
     conn = get_db_connection()

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Edit Person</h2>
+  <form method="post">
+    <label>Name: <input type="text" name="name" value="{{ person['name'] }}" required></label><br>
+    <label>Team: <input type="text" name="team" value="{{ person['team'] }}"></label><br>
+    <label>Grade: <input type="text" name="grade" value="{{ person['grade'] }}" required></label><br>
+    <label>Work Stream: <input type="text" name="work_stream" value="{{ person['work_stream'] }}"></label><br>
+    <label>Location: <input type="text" name="location" value="{{ person['location'] }}" required></label><br>
+    <label>Contract Type: <input type="text" name="contract_type" value="{{ person['contract_type'] }}"></label><br>
+    <label>Status: <input type="text" name="status" value="{{ person['status'] }}"></label><br>
+    <label>Start Date (YYYY-MM-DD): <input type="text" name="start_date" value="{{ person['start_date'] }}"></label><br>
+    <label>Expected End Date (YYYY-MM-DD): <input type="text" name="expected_end_date" value="{{ person['expected_end_date'] }}"></label><br>
+    <input type="submit" value="Update Person">
+  </form>
+{% endblock %}
