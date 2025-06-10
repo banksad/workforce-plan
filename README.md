@@ -6,11 +6,12 @@ to allocated budgets. The codebase uses a lightweight Python stack so it can be
 run in restricted environments and gradually grow into a web service that offers
 reporting tools for human resources teams.
 
-The repository currently contains modules that will evolve into a full
-application:
+The repository currently contains the following modules:
 
-- `src/app.py` — entry point exposing a basic Flask server
-- `src/database.py` — utilities for connecting to a SQLite database
+- `app.py` — Flask server providing pages to manage people, posts and budget data.
+- `database.py` — utilities for connecting to a SQLite database.
+- `init_db.py` — script to create the required tables.
+- `utils.py` — helper functions used for forecasting and budgeting.
 
 ## Getting Started
 
@@ -26,15 +27,23 @@ environment where SQLite is not compiled into Python, you can add a
 `pysqlite3` package that matches your Python version, but it is usually
 unnecessary.
 
-2. Run the application:
+2. Initialize the database:
 
 ```bash
-python src/app.py
+python init_db.py
 ```
 
-3. Initialize the database by visiting `http://localhost:5000/init` in your
-browser. You can then add people records with a POST request to `/people` using
-JSON payloads.
+This creates the SQLite tables defined in `init_db.py`.
+
+3. Run the application:
+
+```bash
+python app.py
+```
+
+4. Open `http://localhost:5000/` in your browser and use the navigation links to
+manage records or run a forecast. You can also export the people table to CSV
+and generate a monthly cost chart from the interface.
 
 Future development will add more functionality, including data ingestion,
 forecasting algorithms, and a user interface.
