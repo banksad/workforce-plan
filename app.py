@@ -140,6 +140,116 @@ def manage_budget():
         conn.close()
         return render_template("manage_budget.html", budgets=budgets)
 
+
+@app.route("/manage_pay", methods=["GET", "POST"])
+def manage_pay():
+    conn = get_db_connection()
+    c = conn.cursor()
+    if request.method == "POST":
+        location = request.form["location"]
+        grade = request.form["grade"]
+        year_month = request.form["date"]
+        pay = float(request.form["pay"])
+
+        c.execute(
+            """
+            INSERT INTO salaries (grade, location, year_month, monthly_planning_rate)
+            VALUES (?, ?, ?, ?)
+            """,
+            (grade, location, year_month, pay),
+        )
+        conn.commit()
+        return redirect(url_for("manage_pay"))
+    else:
+        c.execute("SELECT * FROM salaries")
+        salaries = c.fetchall()
+        conn.close()
+        return render_template("manage_pay.html", salaries=salaries)
+
+
+@app.route("/download_pay_template")
+def download_pay_template():
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["location", "grade", "date", "pay"])
+    output.seek(0)
+    return send_file(
+        io.BytesIO(output.getvalue().encode()),
+        mimetype="text/csv",
+        as_attachment=True,
+        download_name="pay_template.csv",
+    )
+
+
+@app.route("/upload_pay", methods=["POST"])
+def upload_pay():
+    file = request.files.get("csv_file")
+    if not file:
+        return redirect(url_for("manage_pay"))
+
+    stream = io.StringIO(file.stream.read().decode("utf-8"))
+    reader = csv.DictReader(stream)
+
+    conn = get_db_connection()
+    c = conn.cursor()
+    for row in reader:
+        location = row.get("location")
+        grade = row.get("grade")
+        year_month = row.get("date")
+        pay = row.get("pay")
+        if location and grade and year_month and pay:
+            try:
+                pay_val = float(pay)
+            except ValueError:
+                continue
+            c.execute(
+                """
+                INSERT INTO salaries (grade, location, year_month, monthly_planning_rate)
+                VALUES (?, ?, ?, ?)
+                """,
+                (grade, location, year_month, pay_val),
+            )
+    conn.commit()
+    conn.close()
+    return redirect(url_for("manage_pay"))
+
+
+@app.route("/edit_pay/<int:salary_id>", methods=["GET", "POST"])
+def edit_pay(salary_id):
+    conn = get_db_connection()
+    c = conn.cursor()
+    if request.method == "POST":
+        location = request.form["location"]
+        grade = request.form["grade"]
+        year_month = request.form["date"]
+        pay = float(request.form["pay"])
+        c.execute(
+            """
+            UPDATE salaries
+            SET grade=?, location=?, year_month=?, monthly_planning_rate=?
+            WHERE salary_id=?
+            """,
+            (grade, location, year_month, pay, salary_id),
+        )
+        conn.commit()
+        conn.close()
+        return redirect(url_for("manage_pay"))
+    else:
+        c.execute("SELECT * FROM salaries WHERE salary_id=?", (salary_id,))
+        record = c.fetchone()
+        conn.close()
+        return render_template("edit_pay.html", record=record)
+
+
+@app.route("/delete_pay/<int:salary_id>", methods=["POST"])
+def delete_pay(salary_id):
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("DELETE FROM salaries WHERE salary_id=?", (salary_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for("manage_pay"))
+
 @app.route("/run_forecast")
 def run_forecast_route():
     # Use query parameters "year" and "month" if provided, otherwise default to current.

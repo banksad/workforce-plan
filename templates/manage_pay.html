@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Manage Pay Rates</h2>
+  <form method="post">
+    <label>Location: <input type="text" name="location" required></label><br>
+    <label>Grade: <input type="text" name="grade" required></label><br>
+    <label>Date (YYYY-MM): <input type="text" name="date" required></label><br>
+    <label>Pay: <input type="text" name="pay" required></label><br>
+    <input type="submit" value="Add Pay Rate">
+  </form>
+
+  <h3>Bulk Upload</h3>
+  <form action="{{ url_for('upload_pay') }}" method="post" enctype="multipart/form-data">
+    <input type="file" name="csv_file" accept=".csv" required>
+    <input type="submit" value="Upload CSV">
+  </form>
+  <p><a href="{{ url_for('download_pay_template') }}">Download template CSV</a></p>
+
+  <h3>Current Pay Rates</h3>
+  <table border="1">
+    <tr>
+      <th>ID</th>
+      <th>Location</th>
+      <th>Grade</th>
+      <th>Date</th>
+      <th>Pay</th>
+      <th>Actions</th>
+    </tr>
+    {% for row in salaries %}
+    <tr>
+      <td>{{ row["salary_id"] }}</td>
+      <td>{{ row["location"] }}</td>
+      <td>{{ row["grade"] }}</td>
+      <td>{{ row["year_month"] }}</td>
+      <td>{{ row["monthly_planning_rate"] }}</td>
+      <td>
+        <a href="{{ url_for('edit_pay', salary_id=row['salary_id']) }}">Edit</a>
+        <form action="{{ url_for('delete_pay', salary_id=row['salary_id']) }}" method="post" style="display:inline;">
+          <button type="submit" onclick="return confirm('Delete this record?');">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
