@@ -95,6 +95,74 @@ def delete_person(person_id):
     conn.close()
     return redirect(url_for("manage_people"))
 
+
+@app.route("/download_people_template")
+def download_people_template():
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "name",
+        "team",
+        "grade",
+        "work_stream",
+        "location",
+        "contract_type",
+        "status",
+        "start_date",
+        "expected_end_date",
+    ])
+    output.seek(0)
+    return send_file(
+        io.BytesIO(output.getvalue().encode()),
+        mimetype="text/csv",
+        as_attachment=True,
+        download_name="people_template.csv",
+    )
+
+
+@app.route("/upload_people", methods=["POST"])
+def upload_people():
+    file = request.files.get("csv_file")
+    if not file:
+        return redirect(url_for("manage_people"))
+
+    stream = io.StringIO(file.stream.read().decode("utf-8"))
+    reader = csv.DictReader(stream)
+
+    conn = get_db_connection()
+    c = conn.cursor()
+    for row in reader:
+        name = row.get("name")
+        team = row.get("team")
+        grade = row.get("grade")
+        work_stream = row.get("work_stream")
+        location = row.get("location")
+        contract_type = row.get("contract_type")
+        status = row.get("status")
+        start_date = row.get("start_date")
+        expected_end_date = row.get("expected_end_date")
+        if name and grade and location:
+            c.execute(
+                """
+                INSERT INTO people (name, team, grade, work_stream, location, contract_type, status, start_date, expected_end_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    name,
+                    team,
+                    grade,
+                    work_stream,
+                    location,
+                    contract_type,
+                    status,
+                    start_date,
+                    expected_end_date,
+                ),
+            )
+    conn.commit()
+    conn.close()
+    return redirect(url_for("manage_people"))
+
 @app.route("/manage_posts", methods=["GET", "POST"])
 def manage_posts():
     conn = get_db_connection()
@@ -118,6 +186,63 @@ def manage_posts():
         conn.close()
         return render_template("manage_posts.html", posts=posts)
 
+
+@app.route("/download_posts_template")
+def download_posts_template():
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "workforce_plan_number",
+        "funding_source",
+        "post_start_date",
+        "post_end_date",
+        "person_id",
+    ])
+    output.seek(0)
+    return send_file(
+        io.BytesIO(output.getvalue().encode()),
+        mimetype="text/csv",
+        as_attachment=True,
+        download_name="posts_template.csv",
+    )
+
+
+@app.route("/upload_posts", methods=["POST"])
+def upload_posts():
+    file = request.files.get("csv_file")
+    if not file:
+        return redirect(url_for("manage_posts"))
+
+    stream = io.StringIO(file.stream.read().decode("utf-8"))
+    reader = csv.DictReader(stream)
+
+    conn = get_db_connection()
+    c = conn.cursor()
+    for row in reader:
+        workforce_plan_number = row.get("workforce_plan_number")
+        funding_source = row.get("funding_source")
+        post_start_date = row.get("post_start_date")
+        post_end_date = row.get("post_end_date")
+        person_id = row.get("person_id") or None
+        if not any([workforce_plan_number, funding_source, post_start_date, post_end_date, person_id]):
+            continue
+        c.execute(
+            """
+            INSERT INTO posts (workforce_plan_number, funding_source, post_start_date, post_end_date, person_id)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                workforce_plan_number,
+                funding_source,
+                post_start_date,
+                post_end_date,
+                person_id,
+            ),
+        )
+    conn.commit()
+    conn.close()
+    return redirect(url_for("manage_posts"))
+
 @app.route("/manage_budget", methods=["GET", "POST"])
 def manage_budget():
     conn = get_db_connection()
@@ -139,6 +264,53 @@ def manage_budget():
         budgets = c.fetchall()
         conn.close()
         return render_template("manage_budget.html", budgets=budgets)
+
+
+@app.route("/download_budget_template")
+def download_budget_template():
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["team", "work_stream", "year_month", "allocated_budget"])
+    output.seek(0)
+    return send_file(
+        io.BytesIO(output.getvalue().encode()),
+        mimetype="text/csv",
+        as_attachment=True,
+        download_name="budget_template.csv",
+    )
+
+
+@app.route("/upload_budget", methods=["POST"])
+def upload_budget():
+    file = request.files.get("csv_file")
+    if not file:
+        return redirect(url_for("manage_budget"))
+
+    stream = io.StringIO(file.stream.read().decode("utf-8"))
+    reader = csv.DictReader(stream)
+
+    conn = get_db_connection()
+    c = conn.cursor()
+    for row in reader:
+        team = row.get("team")
+        work_stream = row.get("work_stream")
+        year_month = row.get("year_month")
+        allocated_budget = row.get("allocated_budget")
+        if year_month and allocated_budget:
+            try:
+                budget_val = float(allocated_budget)
+            except ValueError:
+                continue
+            c.execute(
+                """
+                INSERT INTO budget (team, work_stream, year_month, allocated_budget)
+                VALUES (?, ?, ?, ?)
+                """,
+                (team, work_stream, year_month, budget_val),
+            )
+    conn.commit()
+    conn.close()
+    return redirect(url_for("manage_budget"))
 
 
 @app.route("/manage_pay", methods=["GET", "POST"])
